@@ -1,6 +1,3 @@
-# coinbase-commerce-python
-Coinbase Commerce Python
-=======
 ### Status
 [![Build Status](https://travis-ci.com/adobrzhansky/coinbase-commerce-python.svg?token=G2ZcktBV937UuBYjEjde&branch=master)](https://travis-ci.com/adobrzhansky/coinbase-commerce-python?token=G2ZcktBV937UuBYjEjde&branch=master)
 
@@ -230,4 +227,3 @@ Tox requires the appropriate Python interpreters to run the tests in different e
 ```
 tox
 ```
->>>>>>> a2182a4... api client
