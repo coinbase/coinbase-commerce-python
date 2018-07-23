@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     license='Apache 2.0',
     description='Coinbase Commerce API client library',
-    url='https://github.com/adobrzhansky/coinbase-commerce-python',
+    url='https://github.com/coinbase/coinbase-commerce-python',
     keywords=['api', 'coinbase commerce', 'client'],
     install_requires=install_requires,
     author='Coinbase, Inc.',
