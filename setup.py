@@ -2,10 +2,14 @@
 Also installs included versions of third party libraries, if those libraries
 are not already installed.
 """
+import os
+
 from setuptools import setup
 import coinbase_commerce
 
 version = coinbase_commerce.__version__
+
+long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
 packages = ['coinbase_commerce',
             'coinbase_commerce.api_resources',
@@ -20,8 +24,11 @@ setup(
     include_package_data=True,
     license='Apache 2.0',
     description='Coinbase Commerce API client library',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/coinbase/coinbase-commerce-python',
     keywords=['api', 'coinbase commerce', 'client'],
+    python_requires='>=3.0',
     install_requires=install_requires,
     author='Coinbase, Inc.',
     classifiers=[

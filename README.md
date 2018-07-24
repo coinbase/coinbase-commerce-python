@@ -1,5 +1,5 @@
 ### Status
-[![Build Status](https://travis-ci.com/adobrzhansky/coinbase-commerce-python.svg?token=G2ZcktBV937UuBYjEjde&branch=master)](https://travis-ci.com/adobrzhansky/coinbase-commerce-python?token=G2ZcktBV937UuBYjEjde&branch=master)
+[![Build Status](https://travis-ci.com/coinbase/coinbase-commerce-python.svg)](https://travis-ci.com/coinbase/coinbase-commerce-python)
 
 # coinbase-commerce-python
 Coinbase Commerce Python
@@ -85,11 +85,11 @@ All errors occuring during interaction with the API will be raised as exceptions
 
 Install with ``pip``:
 
-    pip install --upgrade coinbase_commerce
+    pip install --upgrade coinbase-commerce
 
 or with ``easy_install``:
 
-    easy_install --upgrade coinbase_commerce
+    easy_install --upgrade coinbase-commerce
 
 
 ## Usage
