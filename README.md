@@ -1,5 +1,4 @@
 ### Status
-[![Build Status](https://travis-ci.com/coinbase/coinbase-commerce-python.svg)](https://travis-ci.com/coinbase/coinbase-commerce-python)
 
 # coinbase-commerce-python
 Coinbase Commerce Python

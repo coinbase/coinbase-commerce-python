@@ -5,9 +5,10 @@ are not already installed.
 import os
 
 from setuptools import setup
-import coinbase_commerce
 
-version = coinbase_commerce.__version__
+version_contents = {}
+with open(os.path.join(os.path.dirname(__file__), 'coinbase_commerce', 'version.py'), encoding='utf-8') as f:
+    exec(f.read(), version_contents)
 
 long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -19,7 +20,7 @@ install_requires = ["requests>=2.14.0", ]
 
 setup(
     name='coinbase_commerce',
-    version=version,
+    version=version_contents['VERSION'],
     packages=packages,
     include_package_data=True,
     license='Apache 2.0',
