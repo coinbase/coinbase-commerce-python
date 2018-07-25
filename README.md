@@ -1,4 +1,3 @@
-### Status
 [![CircleCI](https://circleci.com/gh/coinbase/coinbase-commerce-python/tree/master.svg?style=svg)](https://circleci.com/gh/coinbase/coinbase-commerce-python/tree/master)
 
 # coinbase-commerce-python
