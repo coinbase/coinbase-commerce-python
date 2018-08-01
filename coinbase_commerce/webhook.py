@@ -8,7 +8,7 @@ from coinbase_commerce.error import WebhookInvalidPayload
 from coinbase_commerce.util import secure_compare
 
 
-class Webhook:
+class Webhook(object):
     """
     Analyze and construct appropriate event object based on webhook notification
     """
@@ -27,7 +27,7 @@ class Webhook:
         return Event(data=event)
 
 
-class WebhookSignature:
+class WebhookSignature(object):
 
     @staticmethod
     def _compute_signature(payload, secret):

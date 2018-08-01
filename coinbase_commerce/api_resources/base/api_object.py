@@ -9,7 +9,7 @@ class APIObject(dict):
     """
 
     def __init__(self, api_client=None, data=None):
-        super().__init__()
+        super(APIObject, self).__init__()
         data = data or {}
         self._api_client = getattr(self, '_api_client', api_client)
         self._unsaved_values = set()
@@ -26,12 +26,12 @@ class APIObject(dict):
         # perform conversion for nested data
         for k, v in kwargs.items():
             converted_value = util.convert_to_api_object(v, api_client=self._api_client)
-            super().__setitem__(k, converted_value)
+            super(APIObject, self).__setitem__(k, converted_value)
 
     # do not include private and protected fields into json serialization
     def __setattr__(self, k, v):
         if k[0] == '_' or k in self.__dict__:
-            return super().__setattr__(k, v)
+            return super(APIObject, self).__setattr__(k, v)
         self[k] = v
         return None
 
@@ -45,7 +45,7 @@ class APIObject(dict):
 
     def __delattr__(self, k):
         if k[0] == '_' or k in self.__dict__:
-            return super().__delattr__(k)
+            return super(APIObject, self).__delattr__(k)
         else:
             del self[k]
 

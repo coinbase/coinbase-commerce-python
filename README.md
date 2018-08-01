@@ -18,7 +18,7 @@ Coinbase Commerce Python
 <!--te-->
 
 ## Python Version
-Only Python 3+ support versions 3.4, 3.5, 3.6 and 3.7 are supported and tested.
+Python 2.7+ and 3.4+ are supported and tested.
 
 ## Third Party Libraries and Dependencies
 

@@ -2,8 +2,8 @@ import functools
 import hmac
 import json
 import warnings
-from urllib.parse import urlparse
 
+from coinbase_commerce.compat import urlparse
 from coinbase_commerce.response import CoinbaseResponse
 
 RESOURCE_MAP = {}
@@ -97,7 +97,7 @@ def secure_compare(a, b):
     return hmac.compare_digest(a, b)
 
 
-class lazy_property:
+class lazy_property(object):
     """ Meant to be used for lazy evaluation of an object attribute."""
 
     def __init__(self, fget):

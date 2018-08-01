@@ -2,14 +2,14 @@ import json
 import warnings
 
 
-class CoinbaseResponse:
+class CoinbaseResponse(object):
     """
     Representation for coinbase commerce response object
     """
 
     def __init__(self, body, code, headers):
 
-        # in case of py34
+        # in case of py27, py34
         if isinstance(body, bytes):
             body = body.decode('utf-8')
 

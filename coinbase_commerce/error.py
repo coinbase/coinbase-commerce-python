@@ -1,8 +1,19 @@
+from coinbase_commerce.compat import py2_unicode_compatible
+
+
+@py2_unicode_compatible
 class CoinbaseError(Exception):
     """
     Base error class for all exceptions raised in this library.
     """
-    pass
+
+    def __str__(self):
+        msg = self._message or "<empty message>"
+        request_id = getattr(self, "request_id", None)
+        if request_id is not None:
+            return u"Request id {0}: {1}".format(request_id, msg)
+        else:
+            return msg
 
 
 class SignatureVerificationError(CoinbaseError):
@@ -12,13 +23,10 @@ class SignatureVerificationError(CoinbaseError):
 
     def __init__(self, sig_header=None, payload=None):
         if sig_header or payload:
-            self._message = "No signatures found matching the expected signature " \
-                            "{0} for payload {1}".format(sig_header, payload)
+            self._message = u"No signatures found matching the expected signature " \
+                            u"{0} for payload {1}".format(sig_header, payload)
         else:
-            self._message = "<empty message>"
-
-    def __str__(self):
-        return self._message
+            self._message = u"<empty message>"
 
 
 class APIError(CoinbaseError):
@@ -32,7 +40,7 @@ class APIError(CoinbaseError):
                  http_status=None,
                  json_body=None,
                  headers=None):
-        super().__init__(message)
+        super(APIError, self).__init__(message)
 
         self._message = message
         self.http_body = self.process_http_body(http_body)
@@ -46,16 +54,9 @@ class APIError(CoinbaseError):
             try:
                 http_body = http_body.decode('utf-8', 'strict')
             except Exception:
-                http_body = ('<Could not decode body as utf-8. '
-                             'Please report to commerce team')
+                http_body = (u'<Could not decode body as utf-8. '
+                             u'Please report to commerce team')
         return http_body
-
-    def __str__(self):
-        msg = self._message or "<empty message>"
-        if self.request_id is not None:
-            return "Request id {0}: {1}".format(self.request_id, msg)
-        else:
-            return msg
 
 
 class ParamRequiredError(APIError):

@@ -7,8 +7,8 @@ import os
 from setuptools import setup
 
 version_contents = {}
-with open(os.path.join(os.path.dirname(__file__), 'coinbase_commerce', 'version.py'), encoding='utf-8') as f:
-    exec(f.read(), version_contents)
+with open(os.path.join(os.path.dirname(__file__), 'coinbase_commerce', 'version.py')) as f:
+    exec (f.read(), version_contents)
 
 long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -16,7 +16,7 @@ packages = ['coinbase_commerce',
             'coinbase_commerce.api_resources',
             'coinbase_commerce.api_resources.base']
 
-install_requires = ["requests>=2.14.0", ]
+install_requires = ["requests>=2.14.0", "six>=1.9"]
 
 setup(
     name='coinbase_commerce',
@@ -29,13 +29,14 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/coinbase/coinbase-commerce-python',
     keywords=['api', 'coinbase commerce', 'client'],
-    python_requires='>=3.0',
     install_requires=install_requires,
     author='Coinbase, Inc.',
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',

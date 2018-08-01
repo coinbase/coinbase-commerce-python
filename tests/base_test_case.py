@@ -8,13 +8,13 @@ API_KEY = 'testkey'
 
 class BaseTestCase(unittest.TestCase):
     def setUp(self):
-        super().setUp()
+        super(BaseTestCase, self).setUp()
         self.request_mock = RequestMock()
         self.request_mock.start()
         self.client = coinbase_commerce.Client(API_KEY)
 
     def tearDown(self):
-        super().tearDown()
+        super(BaseTestCase, self).tearDown()
         self.request_mock.stop()
 
     def stub_request(self, *args, **kwargs):
