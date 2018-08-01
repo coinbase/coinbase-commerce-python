@@ -3,6 +3,9 @@ from coinbase_commerce.api_resources.base import APIResource
 
 
 class ListAPIResource(APIResource):
+    """
+    List operations mixin
+    """
 
     @classmethod
     def list(cls, **params):

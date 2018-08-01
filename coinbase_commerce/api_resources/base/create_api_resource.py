@@ -3,6 +3,9 @@ from coinbase_commerce.api_resources.base import APIResource
 
 
 class CreateAPIResource(APIResource):
+    """
+    Create operations mixin
+    """
 
     @classmethod
     def create(cls, **params):

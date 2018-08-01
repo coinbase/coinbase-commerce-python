@@ -1,6 +1,4 @@
 import textwrap
-from urllib.parse import quote
-from urllib.parse import urljoin
 
 import requests
 
@@ -8,6 +6,8 @@ from coinbase_commerce.api_resources.charge import Charge
 from coinbase_commerce.api_resources.checkout import Checkout
 from coinbase_commerce.api_resources.event import Event
 from coinbase_commerce.auth import APIAuth
+from coinbase_commerce.compat import quote
+from coinbase_commerce.compat import urljoin
 from coinbase_commerce.error import APIError
 from coinbase_commerce.error import build_api_error
 from coinbase_commerce.response import CoinbaseResponse
@@ -15,7 +15,7 @@ from coinbase_commerce.util import check_uri_security, lazy_property
 from coinbase_commerce.util import encode_params
 
 
-class Client:
+class Client(object):
     """
     API Client for the Coinbase API.
     Entry point for making requests to the Coinbase API.

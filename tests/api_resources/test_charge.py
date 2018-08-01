@@ -1,7 +1,3 @@
-import unittest
-from unittest.mock import ANY
-
-from coinbase_commerce.api_resources.base.api_object import APIObject
 from coinbase_commerce.api_resources.charge import Charge
 from tests.base_test_case import BaseTestCase
 

@@ -26,5 +26,7 @@ class APIResource(APIObject):
     @classmethod
     def get_subclasses(cls):
         for subclass in cls.__subclasses__():
-            yield from subclass.get_subclasses()
+            # py2 compatible kind of yield from
+            for child_klass in subclass.get_subclasses():
+                yield child_klass
             yield subclass

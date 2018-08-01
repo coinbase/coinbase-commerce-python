@@ -1,11 +1,11 @@
 import json
-from unittest.mock import patch, ANY
+from mock import patch, ANY
 
 import coinbase_commerce
 from coinbase_commerce.response import CoinbaseResponse
 
 
-class RequestMock:
+class RequestMock(object):
     def __init__(self):
         self._stub_request_handler = RequestStub()
         self._real_coinbase_request = coinbase_commerce.Client._request
@@ -42,7 +42,7 @@ class RequestMock:
         self.request_spy.reset_mock()
 
 
-class RequestStub:
+class RequestStub(object):
     def __init__(self):
         self._entries = {}
 

@@ -1,6 +1,5 @@
-from unittest import mock
-from unittest.mock import PropertyMock
-
+from mock import PropertyMock
+from mock import mock
 from requests import RequestException
 from requests.sessions import Session
 

@@ -3,6 +3,9 @@ from coinbase_commerce.api_resources.base import APIResource
 
 
 class UpdateAPIResource(APIResource):
+    """
+    Update operations mixin
+    """
 
     @classmethod
     def modify(cls, entity_id, **params):
