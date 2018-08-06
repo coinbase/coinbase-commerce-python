@@ -14,6 +14,7 @@ Coinbase Commerce Python
       * [Checkouts](#checkouts)
       * [Charges](#charges)
       * [Events](#events)
+   * [Validating webhook signatures](#validating-webhook-signatures)
    * [Testing and Contributing](#testing-and-contributing)
 <!--te-->
 
@@ -54,10 +55,10 @@ client.checkout.modify
 ```
 as well as ``save, delete, refresh`` methods from API resource class instances.
 ```python
-charge = client.charge.retrieve(<id>)
-charge.refresh()
-charge.save()
-charge.delete()
+checkout = client.checkout.retrieve(<id>)
+checkout.refresh()
+checkout.save()
+checkout.delete()
 ```
 
 Each API method returns an ``APIObject`` (a subclass of ``dict``) representing the JSON response from the API, all of the models are dumpable with JSON.\
@@ -206,6 +207,31 @@ events = client.event.list()
 ```python
 for event in client.event.list_paging_iter():
     print("{!r}".format(event))
+```
+
+## Validating webhook signatures
+You could verify webhook signatures using our library.
+To perform the verification you'll need to provide the event data, a webhook signature from request header, and the endpoint’s secret.
+In case of invalid request signature or request payload, you will receive appropriate error message.
+```python
+WEBHOOK_SECRET = 'your_webhook_secret'
+
+# using Flask
+@app.route('/webhooks', methods=['POST'])
+def webhooks():
+    # event payload
+    request_data = request.data.decode('utf-8')
+    # webhook signature
+    request_sig = request.headers.get('X-CC-Webhook-Signature', None)
+
+    try:
+        # signature verification and event object construction
+        event = Webhook.construct_event(request_data, request_sig, WEBHOOK_SECRET)
+    except (WebhookInvalidPayload, SignatureVerificationError) as e:
+        return str(e), 400
+
+    print("Received event: id={id}, type={type}".format(id=event.id, type=event.type))
+    return 'success', 200
 ```
 
 ### Testing and Contributing
