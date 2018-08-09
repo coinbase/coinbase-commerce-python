@@ -15,7 +15,7 @@ class TestUpdateAPIResource(BaseTestCase):
         obj.baz = 'bar'
         obj.save()
         self.assert_requested('put', TestUpdateResource.RESOURCE_PATH, 'foo',
-                              params={'baz': 'bar'})
+                              data={'baz': 'bar'})
 
     def test_save_fail_with_no_id(self):
         TestUpdateResource._api_client = self.client
@@ -30,4 +30,4 @@ class TestUpdateAPIResource(BaseTestCase):
         TestUpdateResource._api_client = self.client
         TestUpdateResource.modify(entity_id='foo', baz='bar')
         self.assert_requested('put', TestUpdateResource.RESOURCE_PATH, 'foo',
-                              params={'baz': 'bar'})
+                              data={'baz': 'bar'})

@@ -1,5 +1,7 @@
 import json
 
+import six
+
 from coinbase_commerce import util
 
 
@@ -28,7 +30,35 @@ class APIObject(dict):
             converted_value = util.convert_to_api_object(v, api_client=self._api_client)
             super(APIObject, self).__setitem__(k, converted_value)
 
+    def serialize(self, previous=None):
+        params = {}
+        unsaved_keys = self._unsaved_values or set()
+        previous = previous or {}
+
+        for k, v in six.iteritems(self):
+            if k == 'id' or k.startswith('_'):
+                continue
+            elif hasattr(v, 'serialize'):
+                child = v.serialize(previous.get(k, None))
+                if child != {}:
+                    params[k] = v
+            elif k in unsaved_keys:
+                params[k] = self[k]
+
+        return params
+
+    def update(self, **kwargs):
+        for k in kwargs:
+            self._unsaved_values.add(k)
+        return super(APIObject, self).update(kwargs)
+
     # do not include private and protected fields into json serialization
+    def __setitem__(self, k, v):
+        if not hasattr(self, '_unsaved_values'):
+            self._unsaved_values = set()
+        self._unsaved_values.add(k)
+        super(APIObject, self).__setitem__(k, v)
+
     def __setattr__(self, k, v):
         if k[0] == '_' or k in self.__dict__:
             return super(APIObject, self).__setattr__(k, v)
@@ -48,6 +78,11 @@ class APIObject(dict):
             return super(APIObject, self).__delattr__(k)
         else:
             del self[k]
+
+    def __delitem__(self, k):
+        super(APIObject, self).__delitem__(k)
+        if hasattr(self, '_unsaved_values'):
+            self._unsaved_values.remove(k)
 
     def __str__(self):
         try:
