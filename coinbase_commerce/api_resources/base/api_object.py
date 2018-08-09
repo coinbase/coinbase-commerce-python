@@ -47,10 +47,10 @@ class APIObject(dict):
 
         return params
 
-    def update(self, **kwargs):
-        for k in kwargs:
+    def update(self, mapping, **kwargs):
+        for k in mapping:
             self._unsaved_values.add(k)
-        return super(APIObject, self).update(kwargs)
+        return super(APIObject, self).update(mapping, **kwargs)
 
     # do not include private and protected fields into json serialization
     def __setitem__(self, k, v):
