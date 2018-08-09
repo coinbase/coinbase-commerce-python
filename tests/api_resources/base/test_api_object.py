@@ -168,3 +168,25 @@ class TestApiObject(BaseTestCase):
         res = repr(obj)
         self.assertTrue('<APIObject' in res)
         self.assertTrue('id=boo' in res)
+
+    def test_serialize(self):
+        obj = APIObject(data={'foo': 'bar', 'id': 'boo', 'dummy': APIObject(data={'test': 'boo'})})
+        obj.baz = 'bar'
+        obj.dummy.test = 'foo'
+        serialized = obj.serialize()
+        self.assertTrue(serialized.get('baz'))
+        self.assertTrue(serialized.get('dummy'))
+        self.assertIsNone(serialized.get('foo'))
+        self.assertIsInstance(serialized.get('dummy'), APIObject)
+
+    def test_update(self):
+        obj = APIObject(data={'foo': 'bar', 'id': 'boo'})
+        obj.update({'baz': 'bar'})
+        self.assertIn('baz', obj._unsaved_values)
+
+    def test_unsaved(self):
+        obj = APIObject(data={'foo': 'bar', 'id': 'boo'})
+        obj.baz = 'bar'
+        self.assertIn('baz', obj._unsaved_values)
+        del obj.baz
+        self.assertFalse(obj._unsaved_values)
