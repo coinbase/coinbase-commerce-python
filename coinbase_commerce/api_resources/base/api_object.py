@@ -30,20 +30,18 @@ class APIObject(dict):
             converted_value = util.convert_to_api_object(v, api_client=self._api_client)
             super(APIObject, self).__setitem__(k, converted_value)
 
-    def serialize(self, previous=None):
+    def serialize(self):
         params = {}
         unsaved_keys = self._unsaved_values or set()
-        previous = previous or {}
 
         for k, v in six.iteritems(self):
-            if k == 'id' or k.startswith('_'):
+            if k == 'id' or (isinstance(k, str) and k.startswith('_')):
                 continue
             elif hasattr(v, 'serialize'):
-                child = v.serialize(previous.get(k, None))
-                if child != {}:
+                if v.serialize():
                     params[k] = v
             elif k in unsaved_keys:
-                params[k] = self[k]
+                params[k] = v
 
         return params
 
