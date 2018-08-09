@@ -62,7 +62,7 @@ class TestCheckout(BaseTestCase):
         checkout.name = 'new foo'
         checkout.save()
         # assert
-        self.assert_requested('put', 'checkouts', 'bar', params={'name': 'new foo'})
+        self.assert_requested('put', 'checkouts', 'bar', data={'name': 'new foo'})
         self.assertEqual(checkout.name, 'new foo')
 
     def test_update_modify(self):
@@ -72,7 +72,7 @@ class TestCheckout(BaseTestCase):
         checkout = self.client.checkout.modify('bar', name='new foo bar')
         # assert
         self.assertIsInstance(checkout, Checkout)
-        self.assert_requested('put', 'checkouts', 'bar', params={'name': 'new foo bar'})
+        self.assert_requested('put', 'checkouts', 'bar', data={'name': 'new foo bar'})
         self.assertEqual(checkout.name, 'new foo bar')
 
     def test_delete(self):
