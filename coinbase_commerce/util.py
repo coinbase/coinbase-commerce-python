@@ -3,6 +3,8 @@ import hmac
 import json
 import warnings
 
+import six
+
 from coinbase_commerce.compat import urlparse
 from coinbase_commerce.response import CoinbaseResponse
 
@@ -94,7 +96,14 @@ def secure_compare(a, b):
     a and b must both be of the same type: either str (ASCII only),
     or any bytes-like object.
     """
-    return hmac.compare_digest(a, b)
+
+    def utf8(value):
+        if six.PY2 and isinstance(value, six.text_type):
+            return value.encode('utf-8')
+        else:
+            return value
+
+    return hmac.compare_digest(utf8(a), utf8(b))
 
 
 class lazy_property(object):
