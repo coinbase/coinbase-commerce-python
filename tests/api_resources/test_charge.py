@@ -50,3 +50,23 @@ class TestCharge(BaseTestCase):
         self.assert_requested('post', 'charges', data=charge_data)
         self.assertIsInstance(resource, Charge)
         self.assertEqual(resource.id, 'foo')
+
+    def test_cancel(self):
+        # arrange
+        self.stub_request('post', 'charges', {'id': 'foo', 'code': 'bar'})
+        # act
+        resource = self.client.charge.cancel('foo')
+        # assert
+        self.assert_requested('post', 'charges', 'foo', 'cancel', data={})
+        self.assertIsInstance(resource, Charge)
+        self.assertEqual(resource.id, 'foo')
+
+    def test_resolve(self):
+        # arrange
+        self.stub_request('post', 'charges', {'id': 'foo', 'code': 'bar'})
+        # act
+        resource = self.client.charge.resolve('foo')
+        # assert
+        self.assert_requested('post', 'charges', 'foo', 'resolve', data={})
+        self.assertIsInstance(resource, Charge)
+        self.assertEqual(resource.id, 'foo')
