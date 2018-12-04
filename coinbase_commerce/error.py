@@ -1,3 +1,5 @@
+import json
+
 from coinbase_commerce.compat import py2_unicode_compatible
 
 
@@ -23,8 +25,10 @@ class SignatureVerificationError(CoinbaseError):
 
     def __init__(self, sig_header=None, payload=None):
         if sig_header or payload:
-            self._message = u"No signatures found matching the expected signature " \
-                            u"{0} for payload {1}".format(sig_header, payload)
+            self._message = (
+                u"No signatures found matching the expected signature "
+                u"{0} for payload {1}".format(sig_header, payload)
+            )
         else:
             self._message = u"<empty message>"
 
@@ -99,23 +103,42 @@ class WebhookInvalidPayload(APIError):
     pass
 
 
+def _build_api_error(code, body=None, headers=None, blob=None,
+                     json_loads=json.loads):
+    """
+    Internal helper method for creating errors and attaching
+    HTTP response/request details to them.
+    """
+    if blob is None:
+        try:
+            blob = json_loads(body)
+        except (ValueError, TypeError):
+            blob = {}
+
+    error = getattr(blob, 'error', None) or blob.get('error', None) or {}
+    error_id = error.get('type', '')
+    error_message = error.get('message', '')
+    error_class = _error_id_to_class.get(
+        error_id,
+        _status_code_to_class.get(code, APIError)
+    )
+
+    return error_class(message=error_message,
+                       http_body=body,
+                       http_status=code,
+                       json_body=blob,
+                       headers=headers)
+
+
 def build_api_error(response, blob=None):
     """
     Helper method for creating errors and attaching HTTP response/request
     details to them.
     """
-    blob = blob or response.json()
-    error = getattr(blob, 'error', None) or blob.get('error', None)
-    error_id = error.get('type', '')
-    error_message = error.get('message', '')
-    error_class = (_error_id_to_class.get(error_id, None) or
-                   _status_code_to_class.get(response.status_code, APIError))
-
-    return error_class(message=error_message,
-                       http_body=response.content,
-                       http_status=response.status_code,
-                       json_body=blob,
-                       headers=response.headers)
+    return _build_api_error(body=response.content,
+                            code=response.status_code,
+                            headers=response.headers,
+                            blob=blob)
 
 
 _error_id_to_class = {
