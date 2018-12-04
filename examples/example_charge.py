@@ -6,10 +6,11 @@ local_price	         money	Optional	Price in local fiat currency
 metadata	          hash	Optional	Developer defined key value pairs
 redirect_url	    string	Optional	Redirect URL
 """
+import os
 
 from coinbase_commerce.client import Client
 
-API_KEY = "API_KEY"
+API_KEY = os.environ.get("COINBASE_COMMERCE_API_KEY", "API_KEY")
 
 # initialize client
 client = Client(api_key=API_KEY)

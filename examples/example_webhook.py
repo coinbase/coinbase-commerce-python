@@ -10,7 +10,10 @@ Flask server example to test webhooks
 You may need tunnels to localhost webhook development tool and debugging tool.
 f.e. you could try ngrok
 """
-WEBHOOK_SECRET = 'your_webhook_secret'
+WEBHOOK_SECRET = os.environ.get(
+    "COINBASE_COMMERCE_WEBHOOK_SECRET",
+    "your_webhook_secret"
+)
 
 app = Flask(__name__)
 
