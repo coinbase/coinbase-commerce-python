@@ -19,6 +19,9 @@ packages = [
     'coinbase_commerce',
     'coinbase_commerce.api_resources',
     'coinbase_commerce.api_resources.base',
+    'coinbase_commerce.aio',
+    'coinbase_commerce.aio.api_resources',
+    'coinbase_commerce.aio.api_resources.base',
 ]
 
 install_requires = [
@@ -46,6 +49,9 @@ setup(
     install_requires=install_requires,
     extras_require={
         'dev': ['nose>=1.3.4,<2', 'flake8>=3.5.0,<4'] + tests_require,
+        'aio': [
+            'aiohttp>=3.4.4,<4; python_full_version>="3.5.3"',
+        ]
     },
     tests_require=tests_require,
     author='Coinbase, Inc.',
