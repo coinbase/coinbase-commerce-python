@@ -15,8 +15,7 @@ class Charge(ListAPIResource,
             cls.RESOURCE_PATH, entity_id, 'cancel',
             data=params
         )
-        api_obj = util.convert_to_api_object(response, cls._api_client, cls)
-        return api_obj
+        return util.convert_to_api_object(response, cls._api_client, cls)
 
     @classmethod
     def resolve(cls, entity_id, **params):
@@ -24,5 +23,4 @@ class Charge(ListAPIResource,
             cls.RESOURCE_PATH, entity_id, 'resolve',
             data=params
         )
-        api_obj = util.convert_to_api_object(response, cls._api_client, cls)
-        return api_obj
+        return util.convert_to_api_object(response, cls._api_client, cls)
