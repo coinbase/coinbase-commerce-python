@@ -28,6 +28,20 @@ class TestApiClient(BaseTestCase):
         self.assertEqual(client.BASE_API_URI, base_url)
         self.assertIsInstance(client.session, Session)
 
+    @mock.patch('requests.session')
+    def test_api_session(self, mocked_session):
+        api_key, base_url, api_version = TestApiClient.mock_client_params()
+        with Client(api_key, base_url, api_version):
+            pass
+        self.assertEqual(mocked_session.call_count, 1)
+        self.assertEqual(mocked_session.return_value.close.call_count, 1)
+
+        client = Client(api_key, base_url, api_version)
+        self.assertEqual(mocked_session.call_count, 2)
+
+        client.close()
+        self.assertEqual(mocked_session.return_value.close.call_count, 2)
+
     def test_checkout_relation(self):
         client = TestApiClient.mock_client()
         checkout = client.checkout
