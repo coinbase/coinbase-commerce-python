@@ -103,15 +103,14 @@ class WebhookInvalidPayload(APIError):
     pass
 
 
-def _build_api_error(code, body=None, headers=None, blob=None,
-                     json_loads=json.loads):
+def _build_api_error(code, body=None, headers=None, blob=None):
     """
     Internal helper method for creating errors and attaching
     HTTP response/request details to them.
     """
     if blob is None:
         try:
-            blob = json_loads(body)
+            blob = json.loads(body)
         except (ValueError, TypeError):
             blob = {}
 
