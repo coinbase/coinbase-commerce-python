@@ -5,11 +5,9 @@
 # local_price	               money	Optional	Price in local fiat currency
 # requested_info	           array	Optional	Information to collect from the customer: email, name
 """
-import os
-
 from coinbase_commerce import Client
 
-API_KEY = os.environ.get("COINBASE_COMMERCE_API_KEY", "API_KEY")
+API_KEY = "API_KEY"
 
 # initialize client
 client = Client(api_key=API_KEY)

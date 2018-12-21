@@ -1,8 +1,6 @@
-import os
-
 from coinbase_commerce.client import Client
 
-API_KEY = os.environ.get("COINBASE_COMMERCE_API_KEY", "API_KEY")
+API_KEY = "API_KEY"
 client = Client(api_key=API_KEY)
 
 ids_list = []
