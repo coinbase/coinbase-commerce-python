@@ -12,20 +12,28 @@ RESOURCE_MAP = {}
 
 
 def register_resource_cls(*args, **kwargs):
-    def resource_decorator(cls):
-        rn = getattr(cls, "RESOURCE_NAME", resource_name)
+    """Class decorator for registering API resource classes"""
+    # to avoid a circular dependency
+    from coinbase_commerce.api_resources.base import APIResource
+
+    def resource_decorator(cls, resource_name_default=None):
+        if not issubclass(cls, APIResource):
+            raise TypeError(
+                "only {!r} subclasses are supported".format(APIResource)
+            )
+
+        rn = getattr(cls, "RESOURCE_NAME", resource_name_default)
         if rn is not None:
             RESOURCE_MAP[rn] = cls
         return cls
 
-    resource_name = kwargs.get('resource_name', None)
     if args and kwargs:
         raise ValueError("cannot combine positional and keyword args")
     if len(args) == 1:
         return resource_decorator(args[0])
     elif len(args) != 0:
         raise ValueError("expected 1 argument, got %d", len(args))
-    return resource_decorator
+    return functools.partial(resource_decorator, **kwargs)
 
 
 def load_resource_map():
