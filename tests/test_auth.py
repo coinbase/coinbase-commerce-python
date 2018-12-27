@@ -19,3 +19,11 @@ class TestAuth(BaseTestCase):
         self.assertTrue(mock_request.headers.get('X-CC-Version'))
         self.assertEqual(mock_request.headers['X-CC-Api-Key'], 'foo')
         self.assertEqual(mock_request.headers['X-CC-Version'], 'bar')
+
+    def test_auth_headers_mixin(self):
+        auth = APIAuth('foo', 'bar')
+        expected_headers = {
+            'X-CC-Api-Key': 'foo',
+            'X-CC-Version': 'bar'
+        }
+        self.assertEqual(auth.headers, expected_headers)

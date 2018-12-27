@@ -11,6 +11,31 @@ from coinbase_commerce.response import CoinbaseResponse
 RESOURCE_MAP = {}
 
 
+def register_resource_cls(*args, **kwargs):
+    """Class decorator for registering API resource classes"""
+    # to avoid a circular dependency
+    from coinbase_commerce.api_resources.base import APIResource
+
+    def resource_decorator(cls, resource_name_default=None):
+        if not issubclass(cls, APIResource):
+            raise TypeError(
+                "only {!r} subclasses are supported".format(APIResource)
+            )
+
+        rn = getattr(cls, "RESOURCE_NAME", resource_name_default)
+        if rn is not None:
+            RESOURCE_MAP[rn] = cls
+        return cls
+
+    if args and kwargs:
+        raise ValueError("cannot combine positional and keyword args")
+    if len(args) == 1:
+        return resource_decorator(args[0])
+    elif len(args) != 0:
+        raise ValueError("expected 1 argument, got %d", len(args))
+    return functools.partial(resource_decorator, **kwargs)
+
+
 def load_resource_map():
     """
     Create APIResources class mapping
@@ -18,9 +43,12 @@ def load_resource_map():
     """
     # to avoid a circular dependency
     from coinbase_commerce.api_resources.base import APIResource
-    global RESOURCE_MAP
-    RESOURCE_MAP = {k.RESOURCE_NAME: k for k in APIResource.get_subclasses()
-                    if getattr(k, "RESOURCE_NAME", None)}
+
+    RESOURCE_MAP.update({
+        k.RESOURCE_NAME: k
+        for k in APIResource.get_subclasses()
+        if hasattr(k, "RESOURCE_NAME")
+    })
 
 
 def clean_params(params, drop_nones=True, recursive=True):
@@ -45,32 +73,37 @@ def check_uri_security(uri):
     """Warns if the URL is insecure."""
     if urlparse(uri).scheme != 'https':
         warning_message = (
-            'WARNING: this client is sending a request to an insecure'
-            ' API endpoint. Any API request you make may expose your API key and'
-            ' secret to third parties. Consider using the default endpoint:\n\n'
-            ' {}\n'.format(uri))
+            'WARNING: this client is sending a request to an insecure '
+            'API endpoint. Any API request you make may expose your API key '
+            'and secret to third parties. Consider using the default '
+            'endpoint:\n\n '
+            '{}\n'.format(uri)
+        )
         warnings.warn(warning_message, UserWarning)
     return uri
 
 
 def convert_to_api_object(response, api_client=None, resource_class=None):
     """Convert Commerce response to valid python object"""
-    # to avoid a circular dependency
-    from coinbase_commerce.api_resources.base import APIObject
 
     def get_klass(response):
         """
         get APIResponse class or class from params
         if both are None returns APIObject
         """
+        # to avoid a circular dependency
+        from coinbase_commerce.api_resources.base import APIObject
+
         if not RESOURCE_MAP:
             load_resource_map()
         klass_name = response.get('resource')
         klass = RESOURCE_MAP.get(klass_name) or resource_class
 
         # provide api_client only for resource classes
-        return klass(api_client=api_client, data=response) \
+        return (
+            klass(api_client=api_client, data=response)
             if klass else APIObject(data=response)
+        )
 
     if isinstance(response, CoinbaseResponse):
         response = response.data
@@ -81,7 +114,10 @@ def convert_to_api_object(response, api_client=None, resource_class=None):
             response.update(data)
 
     if isinstance(response, list):
-        return [convert_to_api_object(item, api_client=api_client) for item in response]
+        return [
+            convert_to_api_object(item, api_client=api_client)
+            for item in response
+        ]
 
     if isinstance(response, dict):
         return get_klass(response)

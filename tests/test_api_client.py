@@ -1,15 +1,20 @@
-from mock import PropertyMock
-from mock import mock
+from mock import PropertyMock, mock
 from requests import RequestException
 from requests.sessions import Session
 
-from coinbase_commerce.api_resources import Charge
-from coinbase_commerce.api_resources import Checkout
-from coinbase_commerce.api_resources import Event
+from coinbase_commerce.api_resources import Charge, Checkout, Event
 from coinbase_commerce.client import Client
-from coinbase_commerce.error import InvalidRequestError, AuthenticationError, ResourceNotFoundError, \
-    RateLimitExceededError, ServiceUnavailableError, InternalServerError, ParamRequiredError, \
-    ValidationError, APIError
+from coinbase_commerce.error import (
+    APIError,
+    AuthenticationError,
+    InternalServerError,
+    InvalidRequestError,
+    ParamRequiredError,
+    RateLimitExceededError,
+    ResourceNotFoundError,
+    ServiceUnavailableError,
+    ValidationError,
+)
 from coinbase_commerce.response import CoinbaseResponse
 from tests.base_test_case import BaseTestCase
 
@@ -22,6 +27,20 @@ class TestApiClient(BaseTestCase):
         self.assertEqual(client.API_VERSION, api_version)
         self.assertEqual(client.BASE_API_URI, base_url)
         self.assertIsInstance(client.session, Session)
+
+    @mock.patch('requests.session')
+    def test_api_session(self, mocked_session):
+        api_key, base_url, api_version = TestApiClient.mock_client_params()
+        with Client(api_key, base_url, api_version):
+            pass
+        self.assertEqual(mocked_session.call_count, 1)
+        self.assertEqual(mocked_session.return_value.close.call_count, 1)
+
+        client = Client(api_key, base_url, api_version)
+        self.assertEqual(mocked_session.call_count, 2)
+
+        client.close()
+        self.assertEqual(mocked_session.return_value.close.call_count, 2)
 
     def test_checkout_relation(self):
         client = TestApiClient.mock_client()
@@ -94,7 +113,9 @@ class TestApiClient(BaseTestCase):
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_rate_limit_exceeded_error(self, session_mock):
         mock.MagicMock.ok = PropertyMock(return_value=False)
-        mock.MagicMock.error = {}
+        mock.MagicMock.content = PropertyMock(
+            return_value='{"error": {}}'
+        )
         mock.MagicMock.status_code = PropertyMock(return_value=429)
         client = TestApiClient.mock_client()
         with self.assertRaises(RateLimitExceededError):
@@ -103,7 +124,9 @@ class TestApiClient(BaseTestCase):
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_internal_server_error(self, session_mock):
         mock.MagicMock.ok = PropertyMock(return_value=False)
-        mock.MagicMock.error = {}
+        mock.MagicMock.content = PropertyMock(
+            return_value='{"error": {}}'
+        )
         mock.MagicMock.status_code = PropertyMock(return_value=500)
         client = TestApiClient.mock_client()
         with self.assertRaises(InternalServerError):
@@ -112,7 +135,7 @@ class TestApiClient(BaseTestCase):
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_service_unavailable_error(self, session_mock):
         mock.MagicMock.ok = PropertyMock(return_value=False)
-        mock.MagicMock.error = {}
+        mock.MagicMock.content = PropertyMock(return_value='{}')
         mock.MagicMock.status_code = PropertyMock(return_value=503)
         client = TestApiClient.mock_client()
         with self.assertRaises(ServiceUnavailableError):
@@ -121,7 +144,9 @@ class TestApiClient(BaseTestCase):
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_param_required_error(self, session_mock):
         mock.MagicMock.ok = PropertyMock(return_value=False)
-        mock.MagicMock.error = PropertyMock(return_value={'type': 'param_required'})
+        mock.MagicMock.content = PropertyMock(
+            return_value='{"error": {"type": "param_required"}}'
+        )
         client = TestApiClient.mock_client()
         with self.assertRaises(ParamRequiredError):
             client._request('get', 'foo')
@@ -129,7 +154,9 @@ class TestApiClient(BaseTestCase):
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_validation_error(self, session_mock):
         mock.MagicMock.ok = PropertyMock(return_value=False)
-        mock.MagicMock.error = PropertyMock(return_value={'type': 'validation_error'})
+        mock.MagicMock.content = PropertyMock(
+            return_value='{"error": {"type": "validation_error"}}'
+        )
         client = TestApiClient.mock_client()
         with self.assertRaises(ValidationError):
             client._request('get', 'foo')

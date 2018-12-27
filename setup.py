@@ -6,17 +6,31 @@ import os
 
 from setuptools import setup
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 version_contents = {}
-with open(os.path.join(os.path.dirname(__file__), 'coinbase_commerce', 'version.py')) as f:
-    exec (f.read(), version_contents)
+with open(os.path.join(ROOT_DIR, 'coinbase_commerce', 'version.py')) as f:
+    exec(f.read(), version_contents)
 
-long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
+with open(os.path.join(ROOT_DIR, 'README.md')) as f:
+    long_description = f.read()
 
-packages = ['coinbase_commerce',
-            'coinbase_commerce.api_resources',
-            'coinbase_commerce.api_resources.base']
+packages = [
+    'coinbase_commerce',
+    'coinbase_commerce.api_resources',
+    'coinbase_commerce.api_resources.base',
+]
 
-install_requires = ["requests>=2.14.0", "six>=1.9"]
+install_requires = [
+    'requests>=2.14.0,<3',
+    'six>=1.9,<2',
+]
+
+tests_require = [
+    'coverage>=4,<5',
+    'unittest2>=0.8.0,<1',
+    'mock>=2.0.0,<3',
+]
 
 setup(
     name='coinbase_commerce',
@@ -30,6 +44,10 @@ setup(
     url='https://github.com/coinbase/coinbase-commerce-python',
     keywords=['api', 'coinbase commerce', 'client'],
     install_requires=install_requires,
+    extras_require={
+        'dev': ['nose>=1.3.4,<2', 'flake8>=3.5.0,<4'] + tests_require,
+    },
+    tests_require=tests_require,
     author='Coinbase, Inc.',
     classifiers=[
         'Intended Audience :: Developers',
