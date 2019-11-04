@@ -24,12 +24,14 @@ class Client(object):
     BASE_API_URI = 'https://api.commerce.coinbase.com/'
     API_VERSION = '2018-03-22'
 
-    def __init__(self, api_key, base_api_uri=None, api_version=None):
+    def __init__(self, api_key, base_api_uri=None, api_version=None, timeout=None):
         # Allow passing in a different API base and API version.
         self.BASE_API_URI = check_uri_security(base_api_uri or self.BASE_API_URI)
         self.API_VERSION = api_version or self.API_VERSION
         # Set up a requests session for interacting with the API.
         self.session = self._build_session(APIAuth, api_key, self.API_VERSION)
+        # Set up request timeout. None means no timeout.
+        self.timeout = timeout
 
     # Set api resource relations. with lazy evaluated descriptors
     # ---->
@@ -70,6 +72,9 @@ class Client(object):
 
         if data and isinstance(data, dict):
             kwargs['data'] = encode_params(data)
+
+        if self.timeout:
+            kwargs['timeout'] = self.timeout
 
         try:
             response = getattr(self.session, method)(uri, **kwargs)
