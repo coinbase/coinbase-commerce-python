@@ -93,10 +93,19 @@ def convert_to_api_object(response, api_client=None, resource_class=None):
         """
         # to avoid a circular dependency
         from coinbase_commerce.api_resources.base import APIObject
+        try:
+            from coinbase_commerce.aio import Client as AsyncClient
+        except (ImportError, SyntaxError):
+            AsyncClient = None  # noqa
 
         if not RESOURCE_MAP:
             load_resource_map()
+
         klass_name = response.get('resource')
+        if isinstance(klass_name, str):
+            if AsyncClient is not None and isinstance(api_client, AsyncClient):
+                klass_name += '_aio'
+
         klass = RESOURCE_MAP.get(klass_name) or resource_class
 
         # provide api_client only for resource classes
