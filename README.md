@@ -6,10 +6,10 @@ Coinbase Commerce Python
 # Table of contents
 
 <!--ts-->
+   * [Installation](#installation)
    * [Python Versions](#python-version)
    * [Third Party Libraries and Dependencies](#third-party-libraries-and-dependencies)
    * [Documentation](#documentation)
-   * [Installation](#installation)
    * [Usage](#usage)
       * [Checkouts](#checkouts)
       * [Charges](#charges)
@@ -17,6 +17,16 @@ Coinbase Commerce Python
    * [Validating webhook signatures](#validating-webhook-signatures)
    * [Testing and Contributing](#testing-and-contributing)
 <!--te-->
+
+## Installation
+
+Install with ``pip``:
+
+    pip install --upgrade coinbase-commerce
+
+or with ``easy_install``:
+
+    easy_install --upgrade coinbase-commerce
 
 ## Python Version
 Python 2.7+ and 3.4+ are supported and tested.
@@ -80,17 +90,6 @@ All errors occuring during interaction with the API will be raised as exceptions
 | RateLimitExceededError   |     429     |
 | InternalServerError      |     500     |
 | ServiceUnavailableError  |     503     |
-
-## Installation
-
-Install with ``pip``:
-
-    pip install --upgrade coinbase-commerce
-
-or with ``easy_install``:
-
-    easy_install --upgrade coinbase-commerce
-
 
 ## Usage
 ```python
