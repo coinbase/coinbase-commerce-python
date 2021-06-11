@@ -1,6 +1,8 @@
 [![CircleCI](https://circleci.com/gh/coinbase/coinbase-commerce-python/tree/master.svg?style=svg)](https://circleci.com/gh/coinbase/coinbase-commerce-python/tree/master)
 
 # coinbase-commerce-python
+**Note: This repository is not actively maintained.**
+
 Coinbase Commerce Python
 
 # Table of contents
