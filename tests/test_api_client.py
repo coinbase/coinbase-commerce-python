@@ -96,6 +96,7 @@ class TestApiClient(BaseTestCase):
 
     @mock.patch('requests.session', side_effect=mock.MagicMock)
     def test_authentication_error(self, session_mock):
+        mock.MagicMock.content = PropertyMock(return_value='{"error": {}}')
         mock.MagicMock.ok = PropertyMock(return_value=False)
         mock.MagicMock.status_code = PropertyMock(return_value=401)
         client = TestApiClient.mock_client()
